@@ -1,0 +1,143 @@
+[
+    {
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T16:08:31",
+        "duration": 3000000,
+        "extended": 2.32,
+        "id": "d89284bb-1903-4f33-887b-411e3f1e912d",
+        "normal": 2.035,
+        "subType": "dual/square",
+        "time": "2015-03-04T00:08:31.000Z",
+        "timezoneOffset": -480.0,
+        "type": "bolus",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T16:45:22",
+        "id": "f266c7f6-6c82-44ce-8a6e-ea6d7214a4a6",
+        "normal": 1.07,
+        "subType": "normal",
+        "time": "2015-03-04T00:45:22.000Z",
+        "timezoneOffset": -480.0,
+        "type": "bolus",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T22:58:43",
+        "id": "39b82521-1b6c-445e-8221-3fdf1c9a7f34",
+        "normal": 5.715,
+        "subType": "normal",
+        "time": "2015-03-04T06:58:43.000Z",
+        "timezoneOffset": -480.0,
+        "type": "bolus",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T08:33:17",
+        "id": "a448eae6-8d3d-4575-aa1d-26369e1f2828",
+        "normal": 1.91,
+        "subType": "normal",
+        "time": "2015-03-03T16:33:17.000Z",
+        "timezoneOffset": -480.0,
+        "type": "bolus",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "bgInput": 10.006617830027752,
+        "bgTarget": {
+            "high": 4.440598392836427,
+            "low": 4.440598392836427
+        },
+        "bolus": "a448eae6-8d3d-4575-aa1d-26369e1f2828",
+        "carbInput": 21,
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T08:33:17",
+        "id": "958c6241-5ecf-49ac-af9b-7f667fe3a922",
+        "insulinCarbRatio": 10,
+        "insulinOnBoard": 0.0,
+        "insulinSensitivity": 2.2202991964182135,
+        "recommended": {
+            "carb": 2.1,
+            "correction": 0,
+            "net": 2.1
+        },
+        "time": "2015-03-03T16:33:17.000Z",
+        "timezoneOffset": -480.0,
+        "type": "wizard",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T11:47:15",
+        "duration": 3300000,
+        "extended": 2.82,
+        "id": "cf52d3cf-8068-4cd0-83c5-1307317e1add",
+        "subType": "square",
+        "time": "2015-03-03T19:47:15.000Z",
+        "timezoneOffset": -480.0,
+        "type": "bolus",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "bgInput": 10.694339124089398,
+        "bgTarget": {
+            "high": 4.440598392836427,
+            "low": 4.440598392836427
+        },
+        "bolus": "cf52d3cf-8068-4cd0-83c5-1307317e1add",
+        "carbInput": 31,
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T11:47:15",
+        "id": "4903efb2-c5c3-49fd-9f6f-30004071bc1e",
+        "insulinCarbRatio": 14,
+        "insulinOnBoard": 0.020320363270552696,
+        "insulinSensitivity": 2.7753739955227665,
+        "recommended": {
+            "carb": 2.215,
+            "correction": 0,
+            "net": 2.195
+        },
+        "time": "2015-03-03T19:47:15.000Z",
+        "timezoneOffset": -480.0,
+        "type": "wizard",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T21:22:06",
+        "id": "0b8b9234-4ca3-4cdd-b37f-c1895d122e3e",
+        "normal": 0.1,
+        "subType": "normal",
+        "time": "2015-03-04T05:22:06.000Z",
+        "timezoneOffset": -480.0,
+        "type": "bolus",
+        "uploadId": "upid_abcdefghijklmnop"
+    },
+    {
+        "bgInput": 11.585091931989385,
+        "bgTarget": {
+            "high": 4.440598392836427,
+            "low": 4.440598392836427
+        },
+        "bolus": "0b8b9234-4ca3-4cdd-b37f-c1895d122e3e",
+        "carbInput": 26,
+        "deviceId": "DemoData-123456789",
+        "deviceTime": "2015-03-03T21:22:06",
+        "id": "844c67c3-27e7-497f-a603-52ace07b50dd",
+        "insulinCarbRatio": 15,
+        "insulinOnBoard": 0.0,
+        "insulinSensitivity": 1.9427617968659368,
+        "recommended": {
+            "carb": 1.735,
+            "correction": 0,
+            "net": 1.735
+        },
+        "time": "2015-03-04T05:22:06.000Z",
+        "timezoneOffset": -480.0,
+        "type": "wizard",
+        "uploadId": "upid_abcdefghijklmnop"
+    }
+]
