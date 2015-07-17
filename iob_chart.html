@@ -10,8 +10,13 @@
                 fill: black;
             }
             .area {
-              fill: purple;
+              fill: url(#gradient);
               stroke-width: 05px;
+            }
+            .line {
+                fill: none;
+                stroke: black;
+                stroke-width: 02px;
             }
             .axis path,
             .axis line {
@@ -35,27 +40,6 @@
             // Set the ranges
             var x = d3.time.scale().range([0, width]);
             var y = d3.scale.linear().range([height, 0]);
-
-            // Define the axes
-            var xAxis = d3.svg.axis().scale(x)
-                .orient("bottom").ticks(5);
-
-            var yAxis = d3.svg.axis().scale(y)
-                .orient("left").ticks(5);
-
-            // Define the line
-            var line = d3.svg.line()
-                .x(function(d) { return d.date; })
-                .y(function(d) { return d.iob; });
-
-            // Define the area
-            var area = d3.svg.area()
-                .x(function(d) {
-                    console.log("DDDDDDD")
-                    console.log(d);
-                    return x(d.date); })
-                .y0(height)
-                .y1(function(d) {return y(d.iob); })
                 
             // Adds the svg canvas
             var svg = d3.select("body")
@@ -64,17 +48,6 @@
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            // Add the X Axis
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-            // Add the Y Axis
-            svg.append("g")
-                .attr("class", "y axis")
-                .call(yAxis);
 
             d3.json("parsed_iob.json", function(error, data) {
                 var startDate = new Date(data[0]["list"][0]["time"])
@@ -91,22 +64,94 @@
                     }
                 }
 
+                x.domain([startDate, new Date(maxTime)])
+                y.domain([0, maxIOB])
+
+                // Define the axes
+                var xAxis = d3.svg.axis().scale(x)
+                    .orient("bottom");
+
+                var yAxis = d3.svg.axis().scale(y)
+                    .orient("left");
+
+                // Add the X Axis
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                // Add the Y Axis
+                svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis); 
+
                 data.forEach(function (d) {
-                    x.domain([startDate, new Date(maxTime)])
-                    y.domain([0, maxIOB])
                     
                     var g = svg.append("g")
                         .attr("class", "mountain");
+
+                    var pathData = [];
 
                     d.list.forEach(function (entry) {
                         entry.date = new Date(entry.time);
                         entry.iob = entry.insulinOnBoard;
                         
+                        var pathDict = {
+                            "xa": x(entry.time),
+                            "ya": y(entry.iob)
+                        }
+                        pathData.push(pathDict);
+
                         g.append("circle")
                             .attr("r", 1.5)
                             .attr("cx",  function(d) { return x(entry.date); })
                             .attr("cy", function(d) { return y(entry.iob); });  
                     })
+
+                    // Define the line
+                    var line = d3.svg.line()
+                        .x(function(d) { return d.xa; })
+                        .y(function(d) { return d.ya; });
+
+                    // Define the area
+                    var area = d3.svg.area()
+                        .x(function(d) { return d.xa; })
+                        .y0(height)
+                        .y1(function(d) {return d.ya; })
+
+                    g.append("path")
+                        .datum(pathData)
+                        .attr("class", "line")
+                        .attr("d",  line);
+
+                    g.append("path")
+                        .datum(pathData)
+                        .attr("class", "area")
+                        .attr("d",  area);
+
+                    // Define the gradient
+                    var gradient = svg.append("svg:defs")
+                        .append("svg:linearGradient")
+                        .attr("id", "gradient")
+                        .attr("x1", "0%")
+                        .attr("y1", "0%")
+                        .attr("x2", "100%")
+                        .attr("y2", "0%")
+                        .attr("spreadMethod", "pad");
+                    // Define the gradient colors
+                    gradient.append("svg:stop")
+                        .attr("offset", "0%")
+                        .attr("stop-color", d3.rgb(176, 227, 243))
+                        .attr("stop-opacity", 0.65);
+                    gradient.append("svg:stop")
+                        .attr("offset", "25%")
+                        .attr("stop-color", d3.rgb(17, 86, 109))
+                        .attr("stop-opacity", 0.85);
+                    
+                    gradient.append("svg:stop")
+                        .attr("offset", "75%")
+                        .attr("stop-color", d3.rgb(176, 227, 243))
+                        .attr("stop-opacity", 0.65);
                 })
             });
         </script>
