@@ -6,15 +6,11 @@
         <title>IOB Chart</title>
         <style> /* set the CSS */
             body { font: 12px times;}
-            path { 
-                stroke: 
-                stroke-width: 0.5;
-                fill: none;
-                shape-rendering: crispEdges;
+            .circle {
+                fill: black;
             }
-
             .area {
-              fill: url(#gradient);;
+              fill: purple;
               stroke-width: 05px;
             }
             .axis path,
@@ -49,16 +45,17 @@
 
             // Define the line
             var line = d3.svg.line()
-              //  .interpolate("basis")
-                .x(function(d) { return x(d.date); })
-                .y(function(d) { return y(d.iob); });
+                .x(function(d) { return d.date; })
+                .y(function(d) { return d.iob; });
 
             // Define the area
             var area = d3.svg.area()
-                .x(function(d) {return x(d.date); })
+                .x(function(d) {
+                    console.log("DDDDDDD")
+                    console.log(d);
+                    return x(d.date); })
                 .y0(height)
                 .y1(function(d) {return y(d.iob); })
-                //.interpolate("basis")
                 
             // Adds the svg canvas
             var svg = d3.select("body")
@@ -67,59 +64,6 @@
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            // Get the data
-            d3.json("parsed_iob.json", function(error, data) {
-                data.forEach(function(d) {
-                    d.date = new Date(d.time);
-                    console.log(d.date);
-                    d.iob = d.insulinOnBoard;
-                    console.log(d.iob);
-                });
-
-            // Scale the range of the data
-            x.domain(d3.extent(data, function(d) { return d.date; }));
-            y.domain([0, d3.max(data, function(d) { return d.iob; })]);
-
-            // Add the line path.
-           // svg.append("path")
-             //   .attr("class", "line")
-               // .attr("d", line(data));
-
-            // Add the area path
-            svg.append("path")
-                .attr("class", "area")
-                .attr("d", area(data));
-
-            // Define the gradient
-            var gradient = svg.append("svg:defs")
-                .append("svg:linearGradient")
-                .attr("id", "gradient")
-                .attr("x1", "0%")
-                .attr("y1", "0%")
-                .attr("x2", "100%")
-                .attr("y2", "100%")
-                .attr("spreadMethod", "pad");
-
-            // Define the gradient colors
-            gradient.append("svg:stop")
-                .attr("offset", "0%")
-                .attr("stop-color", d3.rgb(127, 0, 255))
-                .attr("stop-opacity", 1);
-
-            gradient.append("svg:stop")
-                .attr("offset", "100%")
-                .attr("stop-color", d3.rgb(255, 255, 102))
-                .attr("stop-opacity", 1);
-            
-            // Add the scatterplot
-            svg.selectAll("dot")
-                .data(data)
-                .enter()
-                .append("circle")
-                .attr("r", 1.5)
-                .attr("cx", function(d) { return x(d.date); })
-                .attr("cy", function(d) { return y(d.iob); });
 
             // Add the X Axis
             svg.append("g")
@@ -131,6 +75,39 @@
             svg.append("g")
                 .attr("class", "y axis")
                 .call(yAxis);
+
+            d3.json("parsed_iob.json", function(error, data) {
+                var startDate = new Date(data[0]["list"][0]["time"])
+                var maxIOB = 0;
+                var maxTime = 0;
+                for(var i=0; i < data.length; i++) {                
+                    for (var j = 0; j < data[i].list.length; j++) {
+                        if (data[i].list[j]["insulinOnBoard"]  > maxIOB) {
+                            maxIOB = data[i].list[j]["insulinOnBoard"]
+                        }
+                        if (data[i].list[j]["time"] > maxTime) {
+                            maxTime = data[i].list[j]["time"]
+                        }
+                    }
+                }
+
+                data.forEach(function (d) {
+                    x.domain([startDate, new Date(maxTime)])
+                    y.domain([0, maxIOB])
+                    
+                    var g = svg.append("g")
+                        .attr("class", "mountain");
+
+                    d.list.forEach(function (entry) {
+                        entry.date = new Date(entry.time);
+                        entry.iob = entry.insulinOnBoard;
+                        
+                        g.append("circle")
+                            .attr("r", 1.5)
+                            .attr("cx",  function(d) { return x(entry.date); })
+                            .attr("cy", function(d) { return y(entry.iob); });  
+                    })
+                })
             });
         </script>
     </body>

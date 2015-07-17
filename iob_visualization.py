@@ -30,22 +30,21 @@ def combine_close_itmes(iob_dict):
             previous_time = entry
     return iob_dict  
 
-def create_iob_dict(data, action_time):
+def create_iob_dict(data_entry, action_time):
     iob_dict = {}
-    for entry in data:
-        time = entry["time"]
-        dose = entry["insulin"]
-        remaining_time = action_time * 60 #in minutes
-        step = 0 
-        decay_rate = 0
+    time = data_entry["time"]
+    dose = data_entry["insulin"]
+    remaining_time = action_time * 60 #in minutes
+    step = 0 
+    decay_rate = 0
+    iob_dict = add_iob(iob_dict, time, dose, step, decay_rate)
+    while remaining_time > 5: #continue to calculate iob values until complete decay
+        if decay_rate < 0.0035:
+            decay_rate += 0.00009
+        step += 1
+        time += 1 * 60 
         iob_dict = add_iob(iob_dict, time, dose, step, decay_rate)
-        while remaining_time > 5: #continue to calculate iob values until complete decay
-            if decay_rate < 0.0035:
-                decay_rate += 0.00009
-            step += 1
-            time += 1 * 60 
-            iob_dict = add_iob(iob_dict, time, dose, step, decay_rate)
-            remaining_time -= 1 
+        remaining_time -= 1 
     ordered = collections.OrderedDict(sorted(iob_dict.items(), key=lambda t: t[0]))
     ordered_list = parser(ordered)
     return ordered_list
@@ -62,8 +61,19 @@ def add_iob(curr_dict, time, dose, step, decay_rate):
             curr_dict[time] += [dose, iob_amount]
     return curr_dict
 
-iob = create_iob_dict(data, 4)
+result = [] 
+key = 1
 
+events = []
+for entry in data:
+    event = create_iob_dict(entry, 4)
+    event_dict = {
+        "number" : key,
+        "list" : event
+    }
+    result.append(event_dict)
+    key += 1
+        
 file_object = open('parsed_iob.json', mode='w')
-json.dump(iob, fp=file_object, sort_keys=True, indent=4) 
+json.dump(result, fp=file_object, sort_keys=True, indent=4) 
 file_object.close()
