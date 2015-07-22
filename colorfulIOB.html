@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <script src="d3/d3.js"></script>
+        <script src="c3-0.4.10/c3.min.js"></script>
+        <title>IOB Chart</title>
+        <link href="c3-0.4.10/c3.css" rel="stylesheet" type="text/css">
+        <style> /* set the CSS */
+            .c3-axis {
+                font-size: 13px;
+                font: times;
+            }  
+            .c3-axis-x {
+                font-size: 11px;
+                font: times;
+            }           
+            .c3-region.first {
+              fill: #00008B ;
+
+            }
+            .c3-region.second {
+              fill: #F0FFFF;
+
+            }
+        </style>
+    </head>
+    <body>
+        <div id="chart"></div>
+        <script>
+            d3.json("data.json", function(error, data) {
+                var columns = [];
+                var events = {};
+                var types = {};
+                for (var i = 0; i < data.length; i++) {
+                    var insulinDose = data[i][0]['insulin'].toFixed(2)
+                    var xDose = 'x' + insulinDose.toString();
+                    events[insulinDose] = xDose;
+                    types[insulinDose] = 'area-spline'
+                    var iob = [insulinDose.toString()]
+                    var time = [xDose]
+                    for (var j = 0; j <data[i].length; j++) {
+                        time.push(new Date(data[i][j]['time']));
+                        iob.push(data[i][j]['insulinOnBoard'].toFixed(2));
+                    }
+                    columns.push(time)
+                    columns.push(iob)
+                }
+                
+                var nextDate = data[0][0]['time']
+                console.log(new Date(nextDate))
+                var lastIob = data[data.length - 1]
+                var endDate = lastIob[lastIob.length -1]['time']
+                var regions = []
+                evenDay = false;
+                while (nextDate <= endDate) {
+                    var color;
+                    if (evenDay) {
+                        color = 'first';
+                    } else {
+                        color = 'second';
+                    }
+                    regionDict = {start: nextDate, end: nextDate + 86400000, class: color};
+                    regions.push(regionDict);
+                    nextDate += 86400000;
+                    evenDay = !evenDay;
+                }
+
+                var chart = c3.generate({
+                    padding: {
+                        top: 10,
+                        right: 30,
+                        bottom: 10,
+                        left: 50,
+                    },
+                    data: {
+                        xs: events,
+                        columns: columns,
+                        types: types
+                    },
+                    subchart: {
+                        show: true
+                    },  
+                    axis: {  
+                        x: {
+                            label: {
+                                text: 'Date (month-day hour:minute)',
+                                position: 'outer-center'
+                            },
+                            type: 'timeseries',
+                            tick: {
+                                culling: {
+                                    max: 25 
+                                },
+                                fit: true,
+                                count: 50,
+                                format: '%m-%d %H:%M'
+                            }
+                        },
+                        y: {
+                            label: {
+                                text: 'Insulin on board (mg/dL)',
+                                position: 'outer-middle'
+                            },
+                            min: 0,
+                            padding: {top:0, bottom:0}
+                        }
+                    },
+                    regions: regions
+                });
+            });
+        </script>
+    </body>
+</html>
