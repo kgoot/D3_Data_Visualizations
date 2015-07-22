@@ -16,19 +16,23 @@
                 font: times;
             }           
             .c3-region.first {
-              fill: #00008B ;
-
+              fill: rgb(211, 219, 221) ;
             }
             .c3-region.second {
-              fill: #F0FFFF;
-
+              fill: rgb(248, 249, 250);
+            }
+            circle.c3-shape.c3-shape-4.c3-circle.c3-circle{
+                fill: black;
+            }
+            path.c3-shape.c3-shape.c3-area.c3-area{
+                opacity: 0.75;
             }
         </style>
     </head>
     <body>
         <div id="chart"></div>
         <script>
-            d3.json("data.json", function(error, data) {
+            d3.json("merp.json", function(error, data) {
                 var columns = [];
                 var events = {};
                 var types = {};
@@ -65,6 +69,14 @@
                     nextDate += 86400000;
                     evenDay = !evenDay;
                 }
+                
+                var gradient = 
+                '<linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">'+
+                '  <stop offset="0%" style="stop-color:rgb(214,240,251);stop-opacity:1" />'+
+                '  <stop offset="27%" style="stop-color:rgb(121,208,242);stop-opacity:1" />'+
+                '  <stop offset="71%" style="stop-color:rgb(214,240,251);stop-opacity:1" />'+
+                '</linearGradient>';
+
 
                 var chart = c3.generate({
                     padding: {
@@ -77,6 +89,12 @@
                         xs: events,
                         columns: columns,
                         types: types
+                    },
+                    color: {
+                        pattern: ['url(#gradient)']
+                    },
+                    oninit: function() {
+                        this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += gradient;
                     },
                     subchart: {
                         show: true
@@ -109,6 +127,9 @@
                     regions: regions
                 });
             });
+            
+            
+
         </script>
     </body>
 </html>
