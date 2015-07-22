@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <script src="d3/d3.js"></script>
+        <script src="c3-0.4.10/c3.min.js"></script>
+        <title>Excercise vs CBG</title>
+        <link href="c3-0.4.10/c3.css" rel="stylesheet" type="text/css">
+        <style> /* set the CSS */
+            .c3-ygrid-line line {
+                stroke: green;
+                opacity: 0.75;
+            }
+            .c3-ygrid-line text {
+                stroke: green;
+                text-size: 12px;
+                text-font: times;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="chart"></div>
+        <script>
+            d3.json("exercise.json", function(error, data) {
+                var columns = []; 
+                var steps = ['steps'];
+                var stepsTime = ['time2'];
+                var cbg = ['Blood glucose'];
+                var cbgTime = ['time1'];
+                for (var i = 0; i < data.length; i++) {
+                    stepsTime.push(data[i]['date'])
+                    steps.push(data[i]['steps'])
+                    for (var j = 0; j < data[i]['cbg'].length; j++) {
+                        console.log(data[i]['cbg'][j]['dose'])
+                        cbg.push(data[i]['cbg'][j]['dose'].toFixed(2))
+                        cbgTime.push(new Date(data[i]['cbg'][j]['time'] * 1000))
+                    }
+                }
+                columns.push(cbg)
+                columns.push(cbgTime)
+                columns.push(steps)
+                columns.push(stepsTime)
+                        
+                var chart = c3.generate({
+                    data: {
+                        xs: {'steps': 'time2', 'Blood glucose': 'time1'},
+                        columns: columns,
+                        types: {'steps': 'area-step', 'Blood glucose': 'spline',},
+                        axes: {
+                         'steps': 'y2'
+                        }
+                    },
+                    color: {
+                        pattern: ['#1f77b4', '#aec7e8']
+                    },
+                    axis: {
+                        x: {
+                            label: {
+                                text: 'Date',
+                                position: 'outer-right'
+                            },
+                            type: 'timeseries',
+                            tick: {
+                                format: '%Y-%m-%d %H:%M',
+                                count: 25
+                            },
+                        },
+                        y: {
+                            label: {
+                                text: 'Blood Glucose (mmol/L)',
+                                position: 'outer-middle'
+                            },
+                            min: Math.min(cbg) - 3,
+                            max: Math.max(cbg) + 3
+                            
+                        },
+                        y2: {
+                            min: Math.min(steps) - 2000,
+                            max: Math.max(steps) + 2000,
+                            show: true,
+                            label: {
+                                text: "Walked steps",
+                                position: "outer-middle"
+                            }
+                        }
+                    },
+                    grid: {
+                        y: {
+                            lines: [
+                                {value: 10000, text: '10,000 STEP DAILY GOAL', axis: 'y2', position: 'start'}  
+                            ]
+                        }
+                    },
+                    subchart: {
+                        show: true
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
